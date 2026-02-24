@@ -1,0 +1,12 @@
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.woff filter=lfs diff=lfs merge=lfs -text
+*.woff2 filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.png.[0-9]* filter=lfs diff=lfs merge=lfs -text
+*.jpg.[0-9]* filter=lfs diff=lfs merge=lfs -text
+*.jpeg.[0-9]* filter=lfs diff=lfs merge=lfs -text
+*.woff.[0-9]* filter=lfs diff=lfs merge=lfs -text
+*.woff2.[0-9]* filter=lfs diff=lfs merge=lfs -text
+*.ttf.[0-9]* filter=lfs diff=lfs merge=lfs -text
