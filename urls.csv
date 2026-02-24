@@ -1,4 +1,4 @@
-url,path
-https://www.roslindale.net/vacancies,roslindale-vacancies
-https://www.justice.gov/pardon/clemency-grants-president-donald-j-trump-2025-present,clemency-grants
-https://openai.com/our-structure/,openai-structure
+url,path,index
+https://www.roslindale.net/vacancies,roslindale-vacancies,vacancies.html
+https://openai.com/our-structure,openai-structure,our-structure.html
+https://www.supremecourt.gov/opinions/slipopinion/25,supremecourt-opinions,opinions/slipopinion/25.html

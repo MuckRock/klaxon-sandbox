@@ -7,20 +7,24 @@ import os
 import sys
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path    = sys.argv[1] if len(sys.argv) > 1 else os.path.join(script_dir, "urls.csv")
-output_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(script_dir, "index.html")
+csv_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(script_dir, "urls.csv")
+output_path = (
+    sys.argv[2] if len(sys.argv) > 2 else os.path.join(script_dir, "index.html")
+)
 
 pages = []
 with open(csv_path, newline="") as f:
     for row in csv.DictReader(f):
-        url  = row["url"].strip()
+        url = row["url"].strip()
         path = row["path"].strip()
+        index = row.get("index", "").strip()
         if url and path:
-            pages.append((url, path))
+            href = f"{path}/{index}" if index else f"{path}/"
+            pages.append((url, href))
 
 items = "\n".join(
-    f'      <li><a href="{html.escape(path)}/">{html.escape(url)}</a></li>'
-    for url, path in pages
+    f'      <li><a href="{html.escape(href)}">{html.escape(url)}</a></li>'
+    for url, href in pages
 )
 
 content = f"""\

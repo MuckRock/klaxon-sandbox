@@ -21,8 +21,8 @@ else
 fi
 
 if [[ -e "$OUTDIR" ]]; then
-    echo "Error: '$OUTDIR' already exists." >&2
-    exit 1
+    echo "'$OUTDIR' already exists." >&2
+    exit 0
 fi
 
 # Clean up the output directory if wget fails
@@ -34,36 +34,26 @@ echo "Fetching:  $URL"
 echo "Output:    $OUTDIR/"
 echo ""
 
-# --no-directories flattens all assets into one level, so relative links in the
-# converted HTML are plain filenames — safe to rename the main file afterward.
 wget \
     --page-requisites \
     --convert-links \
     --span-hosts \
-    --no-directories \
+    --no-host-directories \
+    --no-parent \
     --directory-prefix="$OUTDIR" \
     --adjust-extension \
-    "$URL"
+    --tries=3 \
+    --waitretry=2 \
+    --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+    "$URL" || {
+    rc=$?
+    # Exit code 8 means a server returned an error for one or more assets
+    # (404s, rate limits, etc.). The main page is still usable, so continue.
+    [[ $rc -eq 8 ]] || exit $rc
+    echo "Warning: some assets could not be fetched (wget exit 8)"
+}
 
 trap - ERR
 
-# Derive the filename wget used for the main page.
-# Strip query/fragment, then take the last path component.
-MAIN_NAME=$(printf '%s' "$URL" | sed 's|[?#].*||' | sed 's|.*\/||')
-
-# A root URL (e.g. https://example.com/) produces an empty name → index.html
-[[ -z "$MAIN_NAME" ]] && MAIN_NAME="index.html"
-
-# --adjust-extension may have appended .html to an extension-less name
-if [[ "$MAIN_NAME" != *.html && "$MAIN_NAME" != *.htm ]]; then
-    [[ -f "$OUTDIR/${MAIN_NAME}.html" ]] && MAIN_NAME="${MAIN_NAME}.html"
-fi
-
-# Rename to index.html if not already named that
-if [[ "$MAIN_NAME" != "index.html" && -f "$OUTDIR/$MAIN_NAME" ]]; then
-    mv "$OUTDIR/$MAIN_NAME" "$OUTDIR/index.html"
-fi
-
 echo ""
-echo "Saved to:  $OUTDIR/"
-echo "Main page: $OUTDIR/index.html"
+echo "Saved to: $OUTDIR/"

@@ -34,7 +34,7 @@ jobs:
           done
 
       - name: Fetch pages
-        run: ./fetch-all.sh
+        run: ./fetch-all.py
 
       - name: Generate index
         run: ./generate-index.py
